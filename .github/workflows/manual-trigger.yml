@@ -21,7 +21,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
-      branch: ${{ github.event.inputs.branchName }}
+      branch: '${{ github.event.inputs.branchName }}'
     - run: |
         echo "Hello ${{ github.event.inputs.name }}!" > test.txt
     - name: Commit changes
