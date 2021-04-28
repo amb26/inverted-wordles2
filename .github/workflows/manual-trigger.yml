@@ -11,6 +11,7 @@ jobs:
   write-a-file:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - run: |
         echo "Hello ${{ github.event.inputs.name }}!" > test.txt
     - name: Commit changes
