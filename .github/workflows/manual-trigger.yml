@@ -22,7 +22,8 @@ jobs:
       with:
         branch: '${{ github.event.inputs.branchName }}'
     - uses: actions/checkout@v2
-      ref: '${{ github.event.inputs.branchName }}'
+      with:
+        ref: '${{ github.event.inputs.branchName }}'
     - run: |
         cat test.txt
     - run: |
