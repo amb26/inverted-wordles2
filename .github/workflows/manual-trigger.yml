@@ -23,12 +23,11 @@ jobs:
       with:
         branch: '${{ github.event.inputs.branchName }}'
     - run: |
-        echo "Hello ${{ github.event.inputs.name }}!" > test.txt
+        echo "Hello ${{ github.event.inputs.name }}!" >> test.txt
     - name: Commit changes
       uses: EndBug/add-and-commit@v7
       with:
         add: test.txt
-        author_name: wecountproject
         branch: ${{ github.event.inputs.branchName }}
         message: "chore: create a test file"
     # - name: Commit changes
