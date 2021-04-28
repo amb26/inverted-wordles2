@@ -1,7 +1,6 @@
 name: Manually triggered workflow
 on:
   workflow_dispatch:
-    branches: [ main ]
     inputs:
       branchName:
         description: 'The branch name to create'
@@ -22,6 +21,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         branch: '${{ github.event.inputs.branchName }}'
+    - uses: actions/checkout@v2
+      ref: '${{ github.event.inputs.branchName }}'
     - run: |
         cat test.txt
     - run: |
