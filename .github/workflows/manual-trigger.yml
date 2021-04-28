@@ -23,7 +23,11 @@ jobs:
       with:
         branch: '${{ github.event.inputs.branchName }}'
     - run: |
+        cat test.txt
+    - run: |
         echo "Hello ${{ github.event.inputs.name }}!" >> test.txt
+    - run: |
+        cat test.txt
     - name: Commit changes
       uses: EndBug/add-and-commit@v7
       with:
