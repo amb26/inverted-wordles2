@@ -25,7 +25,8 @@ document.querySelector("form").addEventListener("submit", (e) => {
         },
         body: JSON.stringify(dataTogo)
     }).then(response => {
-        console.log(response);
-        console.log(response.ok ? "success!" : "failed!");
+        const statusElm = document.getElementById("submit_status");
+        statusElm.className = response.ok ? "green" : "red";
+        statusElm.innerHTML = response.ok ? "Your answer has been submitted successfully." : "There is a problem submitting your answer. Please try again later.";
     });
 });

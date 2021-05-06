@@ -9,17 +9,18 @@ permalink: "/answer/{{ question.title | slug }}/"
 <div class="answer">
     <form id="answersForm">
         <h1>{{ question.title }}</h1>
-        <span>Note: The max length for each answer is {{ question.entryMaxLength }} characters.</span>
+        <span class="note">Note: The max length for each answer is {{ question.entryMaxLength }} characters.</span>
 
         <fieldset>
             <legend>{{ question.title | safe }}</legend>
             {% for i in range(0, question.entries) %}
-            <input type="text" autocomplete="false" {{ "autofocus" if i == 0 }} name="answer" maxlength="{{ question.entryMaxLength }}" placeholder="Enter a word or a phase" value="an answer">
+            <input type="text" autocomplete="false" {{ "autofocus" if i == 0 }} name="answer" maxlength="{{ question.entryMaxLength }}" placeholder="Enter a word or a phase">
             {% endfor %}
         </fieldset>
 
         <input type="hidden" name="branch" value="{{ question.branch }}">
-        <button type="submit">Submit Your Answer</button>
+        <button type="submit">Submit Answer</button>
+        <span id="submit_status" role="status"></span>
     </form>
 </div>
 {% endblock %}
