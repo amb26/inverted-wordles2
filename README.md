@@ -41,15 +41,15 @@ The website will be available at http://localhost:3000
 #### Environment Variables
 
 This project uses individual Github branch to save the question and answers for each wordle case. The required
-information are defined in these environment variables:
+information for accessing the Github repository are defined in these environment variables:
 
 * WORDLES_REPO_OWNER: The owner of the Github repository that the wordle data is saved into.
 * WORDLES_REPO_NAME: The name of the Github repository that the wordle data is saved into.
-* ACCESS_TOKEN: The personal access token of the account that is used to create and commit into Github branches. This
+* ACCESS_TOKEN: The personal access token of the account for authenticating the access to the Github repository. This
 access token must have `repo` access. Refer to [the Github documentation](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 about how to create a personal access token.
 
-An example to figure out values of `WORDLES_REPO_OWNER` and `WORDLES_REPO_NAME`: if the URL of a Github repository is
+An example for finding out `WORDLES_REPO_OWNER` and `WORDLES_REPO_NAME` values: if the URL of a Github repository is
 `https://github.com/inclusive-design/inverted-wordles`, the value of `WORDLES_REPO_OWNER` is `inclusive-design` and the
 value of `WORDLES_REPO_NAME` is `inverted-wordles`.
 

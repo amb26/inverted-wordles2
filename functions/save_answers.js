@@ -8,10 +8,11 @@ const githubAPI = "https://api.github.com";
 /**
  * Check if an aswer file in the given branch exists. If exists, along with the existence flag, return
  * `content` and `sha` of this file that will be used at the file update.
- * @param {Object} octokit An instance of octokit with authentication set.
- * @param {String} branch The name of the branch the file existence to be checked against.
+ * @param {Object} octokit An instance of octokit with authentication being set.
+ * @param {String} branch The name of the branch that the file existence will be checked against.
  * @return {Promise} The resolved prmoise contains an object with a boolean flag keyed by `exists`. If
- * the file exists. The returned object contains keys `content` and `sha` of the existing file.
+ * the file exists. The returned object contains `content` and `sha` information of the existing file,
+ * which are needed when updating this file in the upcoming process.
  */
 const checkAnswerFileExists = async (octokit, branch) => {
 	return new Promise((resolve, reject) => {
@@ -27,6 +28,8 @@ const checkAnswerFileExists = async (octokit, branch) => {
 				sha: response.data.sha,
 			});
 		}).catch((e) => {
+			// The answers file does not exist only when the returned response is "Not Found". All other error
+			// responses indicate the request failure.
 			if (e.message === "Not Found") {
 				resolve({
 					exists: false
@@ -40,9 +43,9 @@ const checkAnswerFileExists = async (octokit, branch) => {
 };
 
 /**
- * Create a new answers file. The new answer is written into the file in JSON and keyed by a uuid.
- * @param {Object} octokit An instance of octokit with authentication set.
- * @param {String} branch The name of the branch the file will be created.
+ * Create a new answers file. The new answer is written into a JSON file and keyed by a uuid.
+ * @param {Object} octokit An instance of octokit with authentication being set.
+ * @param {String} branch The name of the branch that the file will be created in.
  * @param {Object} newAnswer The answer written into the new file.
  * @return {Promise} The resolve or reject of the promise indicate the file is created successfully or
  * unsuccessfully.
@@ -72,12 +75,12 @@ const createAnswerFile = async (octokit, branch, newAnswer) => {
 };
 
 /**
- * Update an existing answers file by appending the new answer with a uuid key to the exising file.
- * @param {Object} octokit An instance of octokit with authentication set.
+ * Update an existing answers file by appending the new answer keyed by a uuid key to the existing file.
+ * @param {Object} octokit An instance of octokit with authentication being set.
  * @param {String} jsonFileContent The content of the existing answers.json file.
  * @param {String} sha The sha of the existing file.
- * @param {String} branch The name of the branch the file will be updated.
- * @param {Object} newAnswer The answer appended into the existing file.
+ * @param {String} branch The name of the branch that the file to be updated sits in.
+ * @param {Object} newAnswer The answer appended to the existing file.
  * @return {Promise} The resolve or reject of the promise indicate the file is updated successfully or
  * unsuccessfully.
  */
