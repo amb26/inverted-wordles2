@@ -6,23 +6,25 @@ permalink: "/answer/{{ question.title | slug }}/"
 {% extends 'layouts/base.njk' %}
 
 {% block content %}
-<div class="answer">
-    <form id="answersForm">
+<form id="answersForm">
+    <div class="question_title">
         <h1>{{ question.title }}</h1>
-        <span class="note">Note: The max length for each answer is {{ question.entryMaxLength }} characters.</span>
+        <div class="note">Note: The max length for each answer is {{ question.entryMaxLength }} characters.</div>
+    </div>
 
+    <div class="answer_area">
         <fieldset>
             <legend>{{ question.title | safe }}</legend>
             {% for i in range(0, question.entries) %}
-            <input type="text" autocomplete="false" {{ "autofocus" if i == 0 }} name="answer" maxlength="{{ question.entryMaxLength }}" placeholder="Enter a word or a phase">
+            <input type="text" autocomplete="false" {{ "autofocus" if i == 0 }} name="answer" maxlength="{{ question.entryMaxLength }}" placeholder="{{ "Enter a word" if i === 0  else "Enter another word" }}">
             {% endfor %}
         </fieldset>
 
         <input type="hidden" name="branch" value="{{ question.branch }}">
-        <button type="submit">Submit Answer</button>
+        <button type="submit">Submit</button>
         <span id="submit_status" role="status"></span>
-    </form>
-</div>
+    </div>
+</form>
 {% endblock %}
 
 {% block footerScripts %}
