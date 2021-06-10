@@ -29,9 +29,7 @@ inverted_wordles.extractAnswers = function (answersFile) {
         counts[answer] = counts[answer] ? counts[answer] + 1 : 1;
     };
     Object.values(answersFile).forEach(function (oneAnswerRec) {
-        oneAnswerRec.answers.forEach(function (answer) {
-            answer.toLowerCase().split(" ").forEach(storeAnswer);
-        });
+        oneAnswerRec.answers.forEach(storeAnswer);
     });
     return Object.entries(counts).map(function (entry) {
         return {
