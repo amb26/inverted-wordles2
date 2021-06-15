@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const errorOverlay = require("eleventy-plugin-error-overlay");
 
 const htmlMinifyTransform = require("./src/transforms/html-minify.js");
@@ -30,7 +31,22 @@ module.exports = function (eleventyConfig) {
     // Configure BrowserSync.
     eleventyConfig.setBrowserSyncConfig({
         ...eleventyConfig.browserSyncConfig,
-        ghostMode: false
+        ghostMode: false,
+        callbacks: {
+            ready: function (err, bs) {
+            // Whilst this 404 rendering configuration is only active in dev mode, this is necessary to ensure
+            // consistency with netlify's own behaviour when the site is run in production.
+            // https://docs.netlify.com/routing/redirects/redirect-options/#custom-404-page-handling
+            // See original discussion on https://github.com/inclusive-design/inverted-wordles/pull/8
+                bs.addMiddleware("*", (req, res) => {
+                    const content_404 = fs.readFileSync("dist/404.html");
+                    // Provides the 404 content without redirect.
+                    res.write(content_404);
+                    res.writeHead(404);
+                    res.end();
+                });
+            }
+        }
     });
 
     return {
