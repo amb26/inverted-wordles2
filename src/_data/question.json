@@ -1,8 +1,9 @@
 {
-    "title": "<script>alert(\"hello\");</script>What are three most important problems to be addressed by inclusive design?",
+    "workshopName": "a test wordle",
+    "question": "<script>alert(\"hello\");</script>What are three most important problems to be addressed by inclusive design?",
     "entries": 5,
     "entryMaxLength": 80,
     "createdTimestamp": "2021-05-05T18:03:02.752Z",
-    "lastUpdatedTimestamp": null,
+    "lastModifiedTimestamp": null,
     "branch": "test"
 }
