@@ -1,20 +1,9 @@
 #answersForm {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-
-    .question_title {
-        background: #555555;
-        color: white;
-        padding: rem(32) 0;
-    }
-
-    h1,
-    .note,
-    .answer_area {
-        margin: auto;
-        width: 70%;
-    }
+    justify-content: center;
+    margin: auto;
+    width: 90%;
 
     fieldset {
         border: 0;
@@ -30,23 +19,57 @@
         top: rem(-9999);
     }
 
+    .question-entry-area {
+        display: flex;
+        flex-direction: column;
+    }
+
     input {
-        font-size: rem(25);
-        height: rem(95);
+        font-size: rem(12);
+        height: rem(48);
         margin-bottom: rem(16);
         padding: rem(32);
     }
 
-    button {
+    button.submit-answer {
         align-self: center;
-        background-color: #C4C4C4;
-        font-size: rem(25);
-        height: rem(85);
+        background-color: #0080a4;
+        border: rem(6) solid white;
+        border-radius: rem(50);
+        color: white;
+        font-size: rem(18);
+        height: rem(54);
         margin-top: rem(16);
         width: 100%;
+
+        &:focus,
+        &:hover {
+            border: rem(6) double;
+        }
     }
 
-    #submit_status {
+    .view-wordle {
+        align-self: center;
+        border-radius: rem(4);
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+        font-size: rem(24);
+        padding: rem(8);
+        width: rem(215);
+
+        &:focus,
+        &:hover {
+            background-color: #373737;
+            border: rem(6) double;
+            box-shadow: none;
+            color: white;
+
+            svg {
+                fill: white;
+            }
+        }
+    }
+
+    #status {
         align-self: center;
         font-size: rem(24);
         margin: rem(32);
@@ -57,15 +80,27 @@
     }
 
     .green {
-        color: green;
-    }
-
-    .view-wordle {
-        font-size: rem(24);
+        color: #47813b;
     }
 
     .hidden {
         display: none;
     }
+}
 
+@media screen and (min-width: 1024px) {
+    #answersForm {
+        width: 70%;
+
+        input {
+            font-size: rem(18);
+            height: rem(64);
+        }
+
+        button.submit-answer {
+            font-size: rem(24);
+            height: rem(70);
+            width: 50%;
+        }
+    }
 }

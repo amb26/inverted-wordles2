@@ -5,7 +5,8 @@ const {
 } = require("@octokit/core");
 const uuid = require("uuid");
 
-const fetchAnswerFile = require("../functions-common/fetchAnswerFile.js").fetchAnswerFile;
+const gitOpsApi = require("git-ops-api");
+const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 /**
  * Create a new answers file. The new answer is written into a JSON file and keyed by a uuid.
@@ -17,24 +18,17 @@ const fetchAnswerFile = require("../functions-common/fetchAnswerFile.js").fetchA
  */
 const createAnswerFile = async (octokit, branch, newAnswer) => {
     const uniqueId = uuid.v4();
-    return new Promise((resolve, reject) => {
-        const jsonFileContent = {};
-        jsonFileContent[uniqueId] = newAnswer;
+    const jsonFileContent = {};
+    jsonFileContent[uniqueId] = newAnswer;
 
-        // Create a new answers file
-        octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-            owner: process.env.WORDLES_REPO_OWNER,
-            repo: process.env.WORDLES_REPO_NAME,
-            path: "src/_data/answers.json",
-            // Including "[skip ci]" in the commit message notifies notifies Netlify not to trigger a deploy.
-            message: "chore: [skip ci] create answers.json",
-            content: Buffer.from(JSON.stringify(jsonFileContent)).toString("base64"),
-            branch: branch
-        }).then(() => {
-            resolve();
-        }, (e) => {
-            reject("Error at creating the answers file: ", e.message);
-        });
+    return gitOpsApi.createSingleFile(octokit, {
+        repoOwner: process.env.WORDLES_REPO_OWNER,
+        repoName: process.env.WORDLES_REPO_NAME,
+        branchName: branch,
+        filePath: "src/_data/answers.json",
+        fileContent: JSON.stringify(jsonFileContent),
+        // Including "[skip ci]" in the commit message notifies notifies Netlify not to trigger a deploy.
+        commitMessage: "chore: [skip ci] create answers.json"
     });
 };
 
@@ -52,24 +46,15 @@ const updateAnswerFile = async (octokit, jsonFileContent, sha, branch, newAnswer
     const uniqueId = uuid.v4();
     jsonFileContent[uniqueId] = newAnswer;
 
-    return new Promise((resolve, reject) => {
-        // Update an existing answers file
-        octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-            owner: process.env.WORDLES_REPO_OWNER,
-            repo: process.env.WORDLES_REPO_NAME,
-            path: "src/_data/answers.json",
-            // Including "[skip ci]" in the commit message notifies Netlify not to trigger a deploy.
-            message: "chore: [skip ci] update answers.json",
-            content: Buffer.from(JSON.stringify(jsonFileContent)).toString("base64"),
-            sha: sha,
-            branch: branch
-        }).then(() => {
-            resolve();
-        }, (e) => {
-            console.log("Got error.request ", e.request);
-            console.log("Got error ", e);
-            reject("Error at updating the answers file: " + e.data);
-        });
+    return gitOpsApi.updateSingleFile(octokit, {
+        repoOwner: process.env.WORDLES_REPO_OWNER,
+        repoName: process.env.WORDLES_REPO_NAME,
+        branchName: branch,
+        filePath: "src/_data/answers.json",
+        fileContent: JSON.stringify(jsonFileContent),
+        // Including "[skip ci]" in the commit message notifies notifies Netlify not to trigger a deploy.
+        commitMessage: "chore: [skip ci] update answers.json",
+        sha: sha
     });
 };
 
@@ -98,7 +83,7 @@ exports.handler = async function (event) {
 
     try {
         // check if answers.json exists
-        const answerFileInfo = await fetchAnswerFile(octokit, incomingData.branch);
+        const answerFileInfo = await fetchJSONFile(octokit, incomingData.branch, "src/_data/answers.json");
         console.log("Got answerFileInfo ", JSON.stringify(answerFileInfo));
 
         if (answerFileInfo.exists) {

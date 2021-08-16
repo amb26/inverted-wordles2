@@ -7,8 +7,8 @@ const {
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 exports.handler = async function (event) {
-    console.log("Received fetch_answers request at " + new Date() + " with path " + event.path);
-    var branch = /fetch_answer\/(.*)/.exec(event.path)[1];
+    console.log("Received fetch_question request at " + new Date() + " with path " + event.path);
+    var branch = /fetch_question\/(.*)/.exec(event.path)[1];
 
     // Reject the request when:
     // 1. Not a GET request;
@@ -27,14 +27,14 @@ exports.handler = async function (event) {
     });
 
     try {
-        const answerFileInfo = await fetchJSONFile(octokit, branch, "src/_data/answers.json");
-        console.log("Got answerFileInfo ", JSON.stringify(answerFileInfo));
+        const questionFileInfo = await fetchJSONFile(octokit, branch, "src/_data/question.json");
+        console.log("Got questionFileInfo ", JSON.stringify(questionFileInfo));
         return {
             statusCode: 200,
-            body: JSON.stringify(answerFileInfo.content)
+            body: JSON.stringify(questionFileInfo.content)
         };
     } catch (e) {
-        console.log("fetch_answers error: ", e);
+        console.log("fetch_question error: ", e);
         return {
             statusCode: 400,
             body: JSON.stringify({

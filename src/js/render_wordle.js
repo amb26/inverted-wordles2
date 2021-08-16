@@ -52,11 +52,11 @@ inverted_wordles.countAnswers = function (counts) {
 /** Render the layout constructed from makeLayout into the DOM element designated in the supplied Wordle instance
  * @param {d3Layout} layout - The layout object for the Wordle
  * @param {Array} words - Array of "word" objects holding text/size defining the layout
- * @param {Wordle} instance - The Wordle instance for which the layout is to be rendered
+ * @param {WordleInstance} instance - The Wordle instance for which the layout is to be rendered
  */
 inverted_wordles.drawLayout = function (layout, words, instance) {
     instance.element.innerHTML = ""; // TODO: move the "g" generation into static code
-    var colours = d3.scaleOrdinal(d3.schemeCategory10);
+    var colours = d3.scaleOrdinal(instance.colours);
     d3.select(instance.element)
         .attr("width", layout.size()[0])
         .attr("height", layout.size()[1])
@@ -70,6 +70,7 @@ inverted_wordles.drawLayout = function (layout, words, instance) {
         .style("fill", function (d) {
             return colours(d.text);
         })
+        .attr("class", "wordle-text")
         .attr("text-anchor", "middle")
         .attr("transform", function (d) {
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -77,8 +78,69 @@ inverted_wordles.drawLayout = function (layout, words, instance) {
         .text(function (d) { return d.text; });
 };
 
+/** Return the computed value of the font size of the given DOM element
+ * @param {Element} elm - A DOM element
+ * @return {Number} The computed value of the font size of the given element
+ */
+inverted_wordles.getFontSizeValue = function (elm) {
+    const style = window.getComputedStyle(elm, null).getPropertyValue("font-size");
+    return parseFloat(style);
+};
+
+/** Find font sizes of all text nodes and sort unique values into an array. The array is returned by attaching
+ * to the wordle instance
+ * @param {WordleInstance} instance - The singleton instance
+ * @param {Element[]} textElements - An array of DOM elements for wordle texts
+ */
+inverted_wordles.getSortedUniqueFontSizes = function (instance, textElements) {
+    let fontSizes = [];
+    textElements.forEach(elm => {
+        fontSizes.push(inverted_wordles.getFontSizeValue(elm));
+    });
+
+    const uniqueFontSizes = fontSizes.filter((value, index, selfArray) => selfArray.indexOf(value) === index);
+    instance.sortedUniqueFontSizes = [...uniqueFontSizes].sort((a, b) => a - b);
+};
+
+/** Calculate the pitch value based on the font size
+ * @param {Number} thisFontSize - The font size The font size that is based upon to calculate the pitch value
+ * @param {Number[]} sortedUniqueFontSizes - Sorted and unique values of all font sizes
+ * @return {Number} The calculated pitch value in two decimal points
+ */
+inverted_wordles.calculatePitch = function (thisFontSize, sortedUniqueFontSizes) {
+    return sortedUniqueFontSizes.length === 1 ? 1 : 2 * sortedUniqueFontSizes.indexOf(thisFontSize) / (sortedUniqueFontSizes.length - 1);
+};
+
+/** Use web speech API to read wordle texts. The pitch of the voice represents the font size of the text
+ * The larger the font size, the higer should be the pitch.
+ * @param {WordleInstance} instance - The Wordle instance that the speechSynthesis is retrieved from
+ * @param {Element[]} textElements - An array of DOM elements for wordle texts
+ */
+inverted_wordles.bindTTS = function (instance, textElements) {
+    textElements.forEach(elm => {
+        // Speak the wordle text when the text gains a focus or under a pointer.
+        // Note: The "pointerover" event covers the mouseover event and pointer over events via user's fingers
+        // and other means. See https://stackoverflow.com/questions/22773548/difference-between-the-mouseover-and-pointerover-in-visualstatemanager
+        ["pointerover", "focus"].forEach(evt => {
+            elm.addEventListener(evt, (e) => {
+                // If the voiceOver is chosen to be disabled, do nothing
+                if (!instance.tts) {
+                    return;
+                }
+
+                // Cancel the previous announcement
+                instance.synth.cancel();
+                // Announce the current text
+                let utterThis = new SpeechSynthesisUtterance(e.target.textContent);
+                utterThis.pitch = inverted_wordles.calculatePitch(inverted_wordles.getFontSizeValue(e.target), instance.sortedUniqueFontSizes);
+                instance.synth.speak(utterThis);
+            });
+        });
+    });
+};
+
 /** Construct the d3 cloud layout object from the supplied Wordle instance
- * @param {Wordle} instance - The Wordle instance for which the layout is to be constructed
+ * @param {WordleInstance} instance - The Wordle instance for which the layout is to be constructed
  * @return {d3Layout} The layout object for the Wordle
  */
 inverted_wordles.makeLayout = function (instance) {
@@ -98,6 +160,7 @@ inverted_wordles.makeLayout = function (instance) {
             .padding(5)
             .font("Impact")
             .fontSize(function (d) { return d.size; })
+            .rotate(function () { return instance.rotate[Math.floor(Math.random() * instance.rotate.length)]; })
             // Claims to be event-driven but is actually synchronous
             .on("end", function (words) {
                 laidWords = words;
@@ -113,6 +176,16 @@ inverted_wordles.makeLayout = function (instance) {
         }
     }
     inverted_wordles.drawLayout(layout, laidWords, instance);
+
+    const textElements = document.querySelectorAll("text.wordle-text");
+    // Make wordle texts tabbable by setting tabindex to "0"
+    textElements.forEach(elm => {
+        elm.setAttribute("tabindex", "0");
+    });
+
+    // Enable text-to-speed for wordle texts
+    inverted_wordles.getSortedUniqueFontSizes(instance, textElements);
+    inverted_wordles.bindTTS(instance, textElements);
     return layout;
 };
 
@@ -151,6 +224,18 @@ inverted_wordles.fetchAnswers = function (instance) {
     });
 };
 
+/** If the browser doesn't support web speech API, disable the checkbox that enables/disables voiceOver
+ * and display the error message
+ * @param {Object} synth - The speech synthesis object
+ * @param {Object} selectors - The selectors including tts related elements
+ */
+inverted_wordles.checkTTS = function (synth, selectors) {
+    if (!synth) {
+        document.querySelector(selectors.tts).disabled = true;
+        document.querySelector(selectors.ttsController).classList.add("disabled");
+    }
+};
+
 /** Bind the global wordle instance to the "conventional layout" checkbox
  * @param {String} selector - Selector to the checkbox to be bound
  * @param {WordleInstance} instance - The wordle instance
@@ -166,11 +251,25 @@ inverted_wordles.bindConventional = function (selector, instance) {
     });
 };
 
+/** Bind the global wordle instance to the "Enable Pointer VoiceOver" checkbox
+ * @param {String} selector - Selector to the checkbox to be bound
+ * @param {WordleInstance} instance - The wordle instance
+ */
+inverted_wordles.bindTTSInput = function (selector, instance) {
+    var element = document.querySelector(selector);
+    element.addEventListener("change", function () {
+        instance.tts = this.checked;
+    });
+};
+
 inverted_wordles.initWordle = function (options) {
     var instance = inverted_wordles.instance;
+
+    inverted_wordles.checkTTS(instance.synth, options.selectors);
     inverted_wordles.instance.element = document.querySelector(options.selectors.render);
     inverted_wordles.fetchAnswers(instance);
     inverted_wordles.bindConventional(options.selectors.conventional, instance);
+    inverted_wordles.bindTTSInput(options.selectors.tts, instance);
     instance.pollInterval = setInterval(function () {
         inverted_wordles.fetchAnswers(instance);
     }, 5000);
@@ -182,7 +281,7 @@ inverted_wordles.initWordle = function (options) {
 };
 
 // Represents the singleton "instance" of the Wordle, which will be progressively initialised by calls starting at
-// inverted_worldes.initWordle
+// inverted_wordles.initWordle
 inverted_wordles.instance = {
     // DOM element holding the rendered SVG
     element: null,
@@ -190,10 +289,20 @@ inverted_wordles.instance = {
     answerCounts: [],
     // Whether the word sizing strategy uses the "inverted" approach (the default, false) or the "conventional" where size scales with count
     conventional: false,
+    // Whether the pointer VoiceOver for wordle texts is enabled
+    tts: false,
     // The intervalID for polling github for updates
     pollInterval: null,
     // The intervalID for cancelling the polling
     cancelPoll: null,
     // Scaling factor to ensure fit of all words
-    scale: 1.0
+    scale: 1.0,
+    // Colours for filling wordle texts
+    colours: ["#4D806F", "#1B7E83", "#0080A3", "#1365B0", "#5E56A2", "#7870A4", "#6E6E6E", "#505050"],
+    // Rotate directions
+    rotate: [0, -90],
+    // Speech Synthesis for reading wordle texts
+    synth: window.speechSynthesis,
+    // An array of sorted and unique of wordle text font sizes
+    sortedUniqueFontSizes: null
 };

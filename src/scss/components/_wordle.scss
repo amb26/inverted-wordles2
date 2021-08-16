@@ -1,0 +1,116 @@
+.wordle {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+
+    h1 {
+        margin: auto;
+    }
+
+    .wordle-controls {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        & > * {
+            margin: rem(8) rem(32);
+        }
+    }
+
+    .tts-controller {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+
+        svg {
+            height: auto;
+            width: rem(32);
+        }
+
+        .tts-status {
+            color: red;
+            // The tts unavailable message is hidden by default.
+            display: none;
+            font-style: italic;
+        }
+
+        // When TTS is not available on the browser
+        &.disabled {
+            & label {
+                color: #6d6d6d;
+            }
+
+            & .checkbox-holder > span {
+                border: 2px solid #6d6d6d;
+            }
+
+            & > span {
+                display: block;
+            }
+        }
+    }
+
+    .wordleRender svg {
+        height: 100%;
+        width: 100%;
+    }
+
+    .wordle-text:focus,
+    .wordle-text:hover {
+        text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
+    }
+
+    .checkbox-holder {
+        margin-right: rem(8);
+
+        & > span {
+            border: 2px solid black;
+            box-sizing: border-box;
+            display: inline-block;
+            height: rem(32);
+            position: relative;
+            vertical-align: middle;
+            width: rem(32);
+        }
+
+        & > input {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        & > span:hover,
+        & > input:focus + span {
+            outline: 1px solid #000;
+            outline-offset: 2px;
+        }
+
+        svg {
+            /** The checkbox is not quite correctly sized and doesn't fill its box **/
+            height: rem(32);
+            left: -2px;
+
+            /** On Firefox, the SVG will take up an unpredictable amount of extra space in the layout **/
+            position: absolute;
+            top: -2px;
+            width: rem(32);
+        }
+
+        input:not(:checked) + span .checkbox-selected {
+            display: none;
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .wordle {
+        width: 90%;
+
+        .wordle-controls {
+            flex-direction: row;
+        }
+
+        .tts-controller {
+            width: 40%;
+        }
+    }
+}

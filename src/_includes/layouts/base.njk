@@ -22,6 +22,12 @@
         {% block headerScripts %}{% endblock %}
     </head>
     <body>
+        <header>
+            <a class="logo" href="/">
+                {% include "../../images/logo.svg" %}
+                <span class="logo-text">IDRC Wordles</span>
+            </a>
+        </header>
         <main>
             {% block content %}{% endblock %}
         </main>

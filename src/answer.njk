@@ -1,31 +1,49 @@
 ---
 title: Answer A Question
-permalink: "/answer/{{ question.title | slug }}/"
+permalink: "/answer/"
 ---
 
 {% extends 'layouts/base.njk' %}
 
 {% block content %}
+<script>
+    var wordle_globals = {
+        branch: "{{question.branch}}"
+    };
+</script>
+
 <div class="answer">
     <form id="answersForm">
-        <h1>{{ question.title }}</h1>
-        <span class="note">Note: The max length for each answer is {{ question.entryMaxLength }} characters.</span>
+        <h1 class="question-title"></h1>
+        <span class="note">Note: The max length for each answer is <span class="entry-max-length"></span> characters.</span>
 
-        <fieldset>
-            <legend>{{ question.title | safe }}</legend>
-            {% for i in range(0, question.entries) %}
-            <input type="text" autocomplete="false" {{ "autofocus" if i == 0 }} name="answer" maxlength="{{ question.entryMaxLength }}" placeholder="Enter a word or a phase">
-            {% endfor %}
+        <fieldset class="answer_area">
+            <legend class="question-title"></legend>
+            <div class="question-entry-area"></div>
         </fieldset>
 
         <input type="hidden" name="branch" value="{{ question.branch }}">
-        <button type="submit">Submit Answer</button>
-        <span id="submit_status" role="status"></span>
-        <a class="view-wordle hidden" href="/wordle/{{ question.title | slug }}/">View Rendered Wordle</a>
+        <button class="submit-answer" type="submit">Submit Answer</button>
+        <span id="status" role="status"></span>
+        <a class="button view-wordle hidden" href="/wordle/">
+            {% include "./images/view.svg" %}
+            View Wordle
+        </a>
     </form>
 </div>
 {% endblock %}
 
 {% block footerScripts %}
+<script src="/js/populate_question_form.js"></script>
 <script src="/js/submit_answer.js"></script>
+<script>
+inverted_wordles.populateForm({
+    selectors: {
+        questionTitle: ".question-title",
+        entryMaxLength: ".entry-max-length",
+        entryArea: ".question-entry-area",
+        status: "#status"
+    }
+});
+</script>
 {% endblock %}

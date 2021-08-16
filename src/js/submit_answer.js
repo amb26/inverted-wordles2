@@ -13,7 +13,7 @@ var submitAnswer = function (dataTogo) {
 };
 
 var updateStatus = function (response) {
-    const statusElm = document.getElementById("submit_status");
+    const statusElm = document.getElementById("status");
     statusElm.className = response.ok ? "green" : "red";
     statusElm.innerHTML = response.ok ? "Your answer has been submitted successfully." : "There is a problem submitting your answer. Please try again later.";
     if (response.ok) {
