@@ -22,10 +22,12 @@ module.exports = function (eleventyConfig) {
     // Configure passthrough file copy.
     eleventyConfig.addPassthroughCopy({"manifest.json": "manifest.json"});
     eleventyConfig.addPassthroughCopy({"src/js": "js"});
+    eleventyConfig.addPassthroughCopy({"src/lib": "lib"});
 
     eleventyConfig.addPassthroughCopy({
         "node_modules/d3/dist/d3.min.js": "lib/d3.min.js",
-        "node_modules/d3-cloud/build/d3.layout.cloud.js": "lib/d3.layout.cloud.js"
+        "node_modules/d3-cloud/build/d3.layout.cloud.js": "lib/d3.layout.cloud.js",
+        "node_modules/uuid/dist/umd/uuidv4.min.js": "lib/uuidv4.min.js"
     });
 
     // Configure BrowserSync.

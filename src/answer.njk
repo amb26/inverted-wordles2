@@ -14,11 +14,11 @@ permalink: "/answer/"
 
 <div class="answer">
     <form id="answersForm">
-        <h1 class="question-title"></h1>
+        <h1 class="question"></h1>
         <span class="note">Note: The max length for each answer is <span class="entry-max-length"></span> characters.</span>
 
         <fieldset class="answer_area">
-            <legend class="question-title"></legend>
+            <legend class="question"></legend>
             <div class="question-entry-area"></div>
         </fieldset>
 
@@ -39,7 +39,7 @@ permalink: "/answer/"
 <script>
 inverted_wordles.populateForm({
     selectors: {
-        questionTitle: ".question-title",
+        question: ".question",
         entryMaxLength: ".entry-max-length",
         entryArea: ".question-entry-area",
         status: "#status"

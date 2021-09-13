@@ -8,8 +8,7 @@
     },
     "eslint": {
         "js": {
-            "options": {
-            }
+            "excludes": ["./src/lib/*.js"]
         }
     },
     "markdownlint": {

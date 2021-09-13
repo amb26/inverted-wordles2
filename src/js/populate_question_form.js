@@ -7,7 +7,7 @@ var inverted_wordles = {};
 // Populate the data on the answer question page
 inverted_wordles.setFormData = function (response, options) {
     response.json().then(questionFile => {
-        inverted_wordles.setEscapedContent(options.selectors.questionTitle, questionFile.title);
+        inverted_wordles.setEscapedContent(options.selectors.question, questionFile.question);
         inverted_wordles.setEscapedContent(options.selectors.entryMaxLength, questionFile.entryMaxLength);
 
         // Refer to https://stackoverflow.com/questions/30452263/is-there-a-mechanism-to-loop-x-times-in-es6-ecmascript-6-without-mutable-varia#answer-37417004

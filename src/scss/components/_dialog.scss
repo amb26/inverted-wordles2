@@ -1,0 +1,73 @@
+/*
+ * css in this file is from W3C ARIA modal dialog example.
+ * See: https://www.w3.org/TR/wai-aria-practices-1.2/examples/dialog-modal/dialog.html
+ * view-source:https://www.w3.org/TR/wai-aria-practices-1.2/examples/dialog-modal/css/dialog.css
+ */
+
+.hidden {
+    display: none;
+}
+
+[role="alertdialog"],
+[role="dialog"] {
+    background-color: #fff;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    min-height: 100vh;
+    // padding: 15px;
+}
+
+@media screen and (min-width: 640px) {
+    [role="alertdialog"],
+    [role="dialog"] {
+        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.12), 0 15px 12px rgba(0, 0, 0, 0.22);
+        left: 50vw;    /* move to the middle of the screen (assumes relative parent is the body/viewport) */
+        min-height: auto;
+        min-width: calc(640px - (15px * 2));    /* == breakpoint - left+right margin */
+        position: absolute;
+        top: 2rem;
+        transform: translateX(-50%);    /* move backwards 50% of this element's width */
+    }
+}
+
+.dialog_label {
+    text-align: center;
+}
+
+.dialog_desc {
+    border-bottom: 2px solid #7870a4;
+    margin-bottom: rem(16);
+    padding: 0 rem(16);
+}
+
+/* native <dialog> element uses the ::backdrop pseudo-element */
+
+/* dialog::backdrop, */
+.dialog-backdrop {
+    bottom: 0;
+    display: none;
+    left: 0;
+    overflow-y: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+@media screen and (min-width: 640px) {
+    .dialog-backdrop {
+        background: rgba(0, 0, 0, 0.3);
+    }
+}
+
+.dialog-backdrop.active {
+    display: block;
+}
+
+.no-scroll {
+    overflow-y: auto !important;
+}
+
+/* this class is added to the body when a dialog is open */
+.has-dialog {
+    overflow: hidden;
+}

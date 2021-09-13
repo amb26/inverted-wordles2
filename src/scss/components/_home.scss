@@ -1,5 +1,404 @@
-.wordle-home {
-    .list-title {
-        padding-left: 4rem;
+/* Style svg icons */
+.create-svg-class {
+    stroke: var(--create-svg-stroke-color, #565656);
+}
+
+.x-svg-class {
+    stroke: var(--x-svg-stroke-color, #757575);
+}
+
+.view-svg-class {
+    stroke: var(--view-svg-stroke-color, black);
+}
+
+.tick-svg-class {
+    stroke: var(--tick-svg-stroke-color, black);
+}
+
+.view-answer-svg {
+    --view-svg-stroke-color: #0080a4;
+}
+
+.view-wordle-svg {
+    --view-svg-stroke-color: #47813b;
+}
+
+.grey-background {
+    background-color: #e5e5e5;
+}
+
+.margin-auto {
+    margin: auto !important;
+}
+
+header {
+    [data-netlify-identity-button] {
+        margin: rem(16);
+
+        a {
+            background-color: #7870a4;
+            border: rem(4) solid white;
+            border-radius: rem(12);
+            color: white;
+            cursor: pointer;
+            display: block;
+            height: rem(48);
+            max-width: rem(164);
+            padding: rem(8) rem(36);
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+            width: 100%;
+
+            &:focus,
+            &:hover {
+                background-color: black;
+                border: rem(4) double;
+            }
+        }
+    }
+}
+
+.admin-controls {
+    display: flex;
+    flex-direction: row;
+}
+
+button {
+    align-self: center;
+    background-color: white;
+    border: none;
+    border-radius: rem(33);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+
+    &:focus,
+    &:hover {
+        --x-svg-stroke-color: white;
+
+        background-color: #373737;
+        border: rem(6) double;
+        box-shadow: none;
+        color: white;
+    }
+}
+
+.create-button {
+    display: none;
+    height: rem(48);
+    padding: rem(8);
+    width: rem(176);
+
+    &:focus,
+    &:hover {
+        --create-svg-stroke-color: white;
+    }
+
+    svg {
+        height: rem(16);
+        width: rem(16);
+    }
+}
+
+.dialog_form_actions {
+    display: flex;
+    justify-content: space-evenly;
+    padding-bottom: rem(16);
+
+    button {
+        --x-svg-stroke-color: black;
+
+        height: rem(48);
+        padding: 0 rem(8);
+        width: rem(256);
+
+        &:focus,
+        &:hover {
+            --x-svg-stroke-color: white;
+            --tick-svg-stroke-color: white;
+        }
+
+        svg {
+            height: rem(16);
+            width: rem(16);
+        }
+    }
+}
+
+.home {
+    .header {
+        display: none;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .wordles {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .one-wordle {
+        border-bottom: 2px solid #7870a4;
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+
+    label {
+        font-weight: 700;
+    }
+
+    input {
+        font-size: rem(16);
+        height: rem(40);
+        margin: 4px;
+    }
+
+    input[type="text"] {
+        border-radius: rem(4);
+        width: 95%;
+
+        &:disabled {
+            background-color: #f8f8f8;
+            color: #707070;
+        }
+    }
+
+    svg {
+        height: rem(24);
+        width: rem(24);
+    }
+
+    input[name="entries"] {
+        text-align: left;
+    }
+
+    .workshop-name-cell {
+        margin-top: rem(16);
+    }
+
+    .workshop-name-cell,
+    .question-cell,
+    .entries-cell {
+        grid-column-end: 3;
+        grid-column-start: 1;
+    }
+
+    .delete-cell {
+        display: flex;
+        grid-column-end: 2;
+        grid-column-start: 1;
+        grid-row-end: 5;
+        grid-row-start: 5;
+        height: rem(64);
+    }
+
+    .last-modified-cell {
+        align-self: center;
+        grid-column-end: 3;
+        grid-column-start: 2;
+        grid-row-end: 5;
+        grid-row-start: 5;
+        justify-self: right;
+    }
+
+    .view-answer-cell,
+    .view-wordle-cell {
+        border-bottom: 0.5px solid #7870a4;
+        display: flex;
+        height: rem(64);
+        justify-content: flex-start;
+        width: 100%;
+
+        * {
+            margin: rem(8) 0;
+        }
+
+        label {
+            align-self: center;
+            padding-right: rem(16);
+        }
+    }
+
+    .view-answer-cell {
+        border-right: 0.5px solid #a29ec4;
+    }
+
+    .view-wordle-cell {
+        padding-left: rem(16);
+    }
+
+    .delete-cell,
+    .last-modified-cell {
+        * {
+            margin: rem(8) 0;
+        }
+    }
+
+    .one-status {
+        font-size: rem(7);
+        font-style: italic;
+        font-weight: 700;
+        grid-column-end: 3;
+        grid-column-start: 1;
+        grid-row-end: 6;
+        grid-row-start: 6;
+    }
+
+    .view-answer,
+    .view-wordle,
+    .delete-button {
+        align-self: center;
+        border-radius: rem(33);
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+        padding: 0 rem(16);
+
+        &:focus,
+        &:hover {
+            background-color: #373737;
+            border: rem(6) double;
+            box-shadow: none;
+            color: white;
+
+            svg {
+                fill: white;
+            }
+        }
+    }
+
+    .delete-button {
+        background-color: white;
+        border: none;
+
+        &:disabled {
+            background-color: #f8f8f8;
+            color: #707070;
+        }
+
+        &:focus:enabled,
+        &:hover:enabled {
+            --x-svg-stroke-color: white;
+        }
+    }
+
+    #status {
+        align-self: center;
+        color: red;
+        font-size: rem(24);
+        margin: rem(32);
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .home {
+        .header,
+        .one-wordle {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 3fr 3fr 1fr 1.5fr 1.5fr 2fr 1.5fr;
+            justify-content: center;
+        }
+
+        .header {
+            border-bottom: 2px solid #7870a4;
+        }
+
+        .one-wordle {
+            border-bottom: 0.5px solid #7870a4;
+
+            span {
+                height: rem(56);
+                margin: 1rem 0;
+            }
+
+            // Hide all table cell labels that are only visible in mobile view
+            & label {
+                display: none;
+            }
+        }
+
+        .workshop-name-cell {
+            grid-column-end: 2;
+            grid-column-start: 1;
+            grid-row-end: 2;
+            grid-row-start: 1;
+            margin-top: 0;
+        }
+
+        .question-cell {
+            grid-column-end: 3;
+            grid-column-start: 2;
+            grid-row-end: 2;
+            grid-row-start: 1;
+        }
+
+        .entries-cell {
+            grid-column-end: 4;
+            grid-column-start: 3;
+            grid-row-end: 2;
+            grid-row-start: 1;
+            width: rem(80);
+        }
+
+        .view-answer-cell {
+            border: none;
+            grid-column-end: 5;
+            grid-column-start: 4;
+            grid-row-end: 2;
+            grid-row-start: 1;
+            text-align: center;
+        }
+
+        .view-wordle-cell {
+            border-bottom: none;
+            grid-column-end: 6;
+            grid-column-start: 5;
+            grid-row-end: 2;
+            grid-row-start: 1;
+            padding-left: 0;
+            text-align: center;
+        }
+
+        .last-modified-cell {
+            grid-column-end: 7;
+            grid-column-start: 6;
+            grid-row-end: 2;
+            grid-row-start: 1;
+            text-align: center;
+            width: 100%;
+        }
+
+        .delete-cell {
+            grid-column-end: 8;
+            grid-column-start: 7;
+            grid-row-end: 2;
+            grid-row-start: 1;
+        }
+
+        .one-status {
+            font-size: rem(12);
+            grid-column-end: 8;
+            grid-column-start: 1;
+            grid-row-end: 3;
+            grid-row-start: 2;
+        }
+
+        input[name="entries"] {
+            text-align: center;
+        }
+
+        .view-answer,
+        .view-wordle,
+        .delete-button {
+            margin: auto;
+            padding: 0 rem(8);
+        }
+    }
+}
+
+// For small size screens such as iphone 5
+@media screen and (max-width: 330px) {
+    header {
+        .create-button {
+            width: rem(128);
+        }
     }
 }

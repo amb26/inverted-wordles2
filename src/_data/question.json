@@ -1,8 +1,9 @@
 {
-    "title": "What are the qualities of our Learning Imaginary?",
+    "workshopName": "Workshop 2021-06-10",
+    "question": "What are the qualities of our Learning Imaginary?",
     "entries": 3,
     "entryMaxLength": 80,
     "createdTimestamp": "2021-05-05T18:03:02.752Z",
-    "lastUpdatedTimestamp": null,
+    "lastModifiedTimestamp": "2021-05-05T18:03:02.752Z",
     "branch": "workshop-2021-06-10"
 }
