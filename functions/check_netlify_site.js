@@ -28,6 +28,7 @@ exports.handler = async function (event) {
                 "Authorization": "Bearer " + process.env.NETLIFY_TOKEN
             }
         });
+        console.log("Got netlify reponse data of ", JSON.stringify(netlifyResponse.data, null, 2));
 
         const isNetlifySite = netlifyResponse.data.some(oneSite => oneSite.build_settings.repo_url === expectedRepoUrl);
 
