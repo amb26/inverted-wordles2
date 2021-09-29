@@ -35,6 +35,7 @@ exports.handler = async function (event) {
 
     try {
         let resultsTogo = {};
+        console.log("Got incoming data: " + JSON.stringify(incomingData, null, 2));
         for (const branch of incomingData.branches) {
             const wordleUrl = "https://" + branch + "--inverted-wordles.netlify.app/";
             resultsTogo[branch] = await urlExists(wordleUrl);
