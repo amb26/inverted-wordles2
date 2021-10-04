@@ -32,7 +32,7 @@ permalink: /
     </div>
     <span id="status" role="status"></span>
 
-    {# The model dialog for creating new wordles #}
+    {# The modal dialog for creating new wordles #}
     <div class="dialog-backdrop no-scroll">
         <div id="create-dialog" role="alertdialog" aria-modal="true" aria-labelledby="create_dialog_label" aria-describedby="create_dialog_desc" class="hidden">
             <h2 id="create_dialog_label" class="dialog_label">Confirm to Create New Question</h2>
@@ -44,13 +44,13 @@ permalink: /
             {# The value of the branch name is dynamically set when opening the dialog #}
             {# aria-controls value is dynamically set to the id of the wordle row that will be created #}
             <div class="dialog_form_actions">
-                <button type="button" id="create-confirm" aria-controls="" onclick="createWordle(this, 'branchName')">
+                <button type="button" id="create-confirm" aria-controls="" onclick="aria.closeDialog(this);inverted_wordles.manage.createWordle(inverted_wordles.manage.globalOptions);">
                     <svg role="presentation">
                         <use xlink:href="#tick"></use>
                     </svg>
                     Yes, go ahead
                 </button>
-                <button type="button" id="create-cancel" onclick="closeDialog(this)">
+                <button type="button" id="create-cancel" onclick="aria.closeDialog(this)">
                     <svg role="presentation">
                         <use xlink:href="#cross"></use>
                     </svg>
@@ -60,7 +60,7 @@ permalink: /
         </div>
     </div>
 
-    {# The model dialog for deleting wordles #}
+    {# The modal dialog for deleting wordles #}
     <div class="dialog-backdrop no-scroll">
         <div id="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete_dialog_label" aria-describedby="delete_dialog_desc" class="hidden">
             <h2 id="delete_dialog_label" class="dialog_label">Confirm to Delete</h2>
@@ -73,13 +73,13 @@ permalink: /
             {# aria-controls value is dynamically set to the id of the wordle row that will be deleted #}
             <div class="dialog_form_actions">
                 <input type="hidden" name="branchName" value="">
-                <button type="button" id="delete-confirm" aria-controls="" onclick="deleteWordle(this)">
+                <button type="button" id="delete-confirm" aria-controls="" onclick="inverted_wordles.manage.deleteClicked(this, inverted_wordles.manage.globalOptions)">
                     <svg role="presentation">
                         <use xlink:href="#tick"></use>
                     </svg>
                     Yes, delete the question
                 </button>
-                <button type="button" id="delete-cancel" onclick="closeDialog(this)">
+                <button type="button" id="delete-cancel" onclick="aria.closeDialog(this)">
                     <svg role="presentation">
                         <use xlink:href="#cross"></use>
                     </svg>
@@ -119,12 +119,20 @@ permalink: /
 
 {% block headerScripts %}
 <script>
-const globalOptions = {
+var inverted_wordles = {};
+
+inverted_wordles.manage = {};
+inverted_wordles.manage.globalOptions = {
     inputFieldNames: ["workshop-name", "question", "entries"],
+    deployStatus: {
+        ready: "ready",
+        inProgress: "inProgress"
+    },
     wordleRowIdPrefix: "one-wordle-id",
     deleteButtonIdPrefix: "delete-id",
     lastModifiedIdPrefix: "last-modified-id",
     branchNameField: "branchName",
+    deployStatusField: "deployStatus",
     createDialogId: "create-dialog",
     createCancelId: "create-cancel",
     deleteDialogId: "delete-dialog",
@@ -145,19 +153,18 @@ const globalOptions = {
 <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 {# For generating UUID #}
 <script type="text/javascript" src="/lib/uuidv4.min.js"></script>
-{# For model dialogs #}
+{# For modal dialogs #}
 <script src="/lib/utils.js"></script>
 <script src="/lib/dialog.js"></script>
 {# For managing wordles #}
 <script src="/js/manage_wordles_utils.js"></script>
 <script src="/js/login_handler.js"></script>
-<script src="/js/list_wordles.js"></script>
 <script src="/js/edit_wordles.js"></script>
 <script src="/js/delete_wordles.js"></script>
-<script src="/js/create_wordles.js"></script>
+<script src="/js/create_wordle.js"></script>
 <script src="/js/init_manage_wordle.js"></script>
 
 <script>
-inverted_wordles.initWordles();
+inverted_wordles.manage.initManagePage(inverted_wordles.manage.globalOptions);
 </script>
 {% endblock %}
