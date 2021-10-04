@@ -14,7 +14,7 @@ var submitAnswer = function (dataTogo) {
 
 var updateStatus = function (response) {
     const statusElm = document.getElementById("status");
-    statusElm.className = response.ok ? "green" : "red";
+    statusElm.className = response.ok ? "success" : "error";
     statusElm.innerHTML = response.ok ? "Your answer has been submitted successfully." : "There is a problem submitting your answer. Please try again later.";
     if (response.ok) {
         const viewWordle = document.querySelector(".view-wordle");
