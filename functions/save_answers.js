@@ -6,6 +6,7 @@ const {
 const uuid = require("uuid");
 
 const gitOpsApi = require("git-ops-api");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 /**
@@ -22,8 +23,8 @@ const createAnswerFile = async (octokit, branch, newAnswer) => {
     jsonFileContent[uniqueId] = newAnswer;
 
     return gitOpsApi.createSingleFile(octokit, {
-        repoOwner: process.env.WORDLES_REPO_OWNER,
-        repoName: process.env.WORDLES_REPO_NAME,
+        repoOwner: serverUtils.repoOwner,
+        repoName: serverUtils.repoName,
         branchName: branch,
         filePath: "src/_data/answers.json",
         fileContent: JSON.stringify(jsonFileContent),
@@ -47,8 +48,8 @@ const updateAnswerFile = async (octokit, jsonFileContent, sha, branch, newAnswer
     jsonFileContent[uniqueId] = newAnswer;
 
     return gitOpsApi.updateSingleFile(octokit, {
-        repoOwner: process.env.WORDLES_REPO_OWNER,
-        repoName: process.env.WORDLES_REPO_NAME,
+        repoOwner: serverUtils.repoOwner,
+        repoName: serverUtils.repoName,
         branchName: branch,
         filePath: "src/_data/answers.json",
         fileContent: JSON.stringify(jsonFileContent),
@@ -65,16 +66,12 @@ exports.handler = async function (event) {
     // Reject the request when:
     // 1. Not a POST request;
     // 2. Doesn’t provide required values
-    if (event.httpMethod !== "POST" || !incomingData.branch || !incomingData.answers ||
-        !process.env.ACCESS_TOKEN || !process.env.WORDLES_REPO_OWNER || !process.env.WORDLES_REPO_NAME) {
-        return {
-            statusCode: 400,
-            body: "Invalid HTTP request method or missing field values or missing environment variables."
-        };
+    if (event.httpMethod !== "POST" || !serverUtils.isParamsExist([incomingData.branch, incomingData.answers])) {
+        return serverUtils.invalidRequestResponse;
     }
 
     const octokit = new Octokit({
-        auth: process.env.ACCESS_TOKEN
+        auth: process.env.GITHUB_TOKEN
     });
     const newAnswer = {
         answers: incomingData.answers,

@@ -27,7 +27,7 @@ inverted_wordles.setEscapedContent = function (selector, content) {
 
 inverted_wordles.reportError = function (error, statusSelector) {
     const statusElm = document.querySelector(statusSelector);
-    statusElm.className = "red";
+    statusElm.className = "error";
     statusElm.innerHTML = "Error at populating the page data: " + error;
 };
 
