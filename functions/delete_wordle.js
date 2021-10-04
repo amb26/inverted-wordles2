@@ -1,7 +1,7 @@
 "use strict";
 
 const gitOpsApi = require("git-ops-api");
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
 const {
     Octokit
 } = require("@octokit/core");
@@ -23,8 +23,8 @@ exports.handler = async function (event) {
 
     try {
         await gitOpsApi.deleteBranch(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME,
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName,
             branchName: branch
         });
         console.log("Done: the wordle branch is deleted.");

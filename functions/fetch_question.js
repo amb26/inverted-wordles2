@@ -4,7 +4,7 @@ const {
     Octokit
 } = require("@octokit/core");
 
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 exports.handler = async function (event) {

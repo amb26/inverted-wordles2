@@ -5,7 +5,7 @@ const {
 } = require("@octokit/core");
 
 const gitOpsApi = require("git-ops-api");
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 const allowedParameters = ["branch", "workshop-name", "question", "entries"];
 
@@ -59,8 +59,8 @@ exports.handler = async function (event) {
         console.log("Save newQuestionFileInfo: ", JSON.stringify(newQuestionFileInfo));
 
         await gitOpsApi.updateSingleFile(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME,
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName,
             branchName: branch,
             filePath: questionFilePath,
             fileContent: JSON.stringify(newQuestionFileInfo),

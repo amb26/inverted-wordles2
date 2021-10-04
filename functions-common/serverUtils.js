@@ -1,13 +1,23 @@
 "use strict";
 
-const invalidRequestResponse = {
+// Netlify API endpoint
+exports.netlifyApi = "https://api.netlify.com/api/v1";
+
+// Parse GitHub repository owner and name
+const matches = /https:\/\/github.com\/(.*)\/(.*)/.exec(process.env.REPOSITORY_URL);
+const repoOwner = matches[1];
+const repoName = matches[2];
+
+exports.repoOwner = repoOwner;
+exports.repoName = repoName;
+
+// Define a common error message for invalid incoming requests
+exports.invalidRequestResponse = {
     statusCode: 400,
     body: JSON.stringify({
         message: "Invalid HTTP request method or missing field values or missing environment variables."
     })
 };
-
-exports.invalidRequestResponse = invalidRequestResponse;
 
 /**
  * Check if all values required by the endpoint are provided. These values include values sent in the request
@@ -17,5 +27,5 @@ exports.invalidRequestResponse = invalidRequestResponse;
  */
 exports.isParamsExist = values => {
     const isAllValuesExist = values ? values.every(value => !!value) : true;
-    return isAllValuesExist && process.env.GITHUB_TOKEN && process.env.WORDLES_REPO_OWNER && process.env.WORDLES_REPO_NAME;
+    return isAllValuesExist && process.env.GITHUB_TOKEN && process.env.NETLIFY_TOKEN && repoOwner && repoName;
 };

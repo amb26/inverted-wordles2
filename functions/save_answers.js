@@ -6,7 +6,7 @@ const {
 const uuid = require("uuid");
 
 const gitOpsApi = require("git-ops-api");
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 /**
@@ -23,8 +23,8 @@ const createAnswerFile = async (octokit, branch, newAnswer) => {
     jsonFileContent[uniqueId] = newAnswer;
 
     return gitOpsApi.createSingleFile(octokit, {
-        repoOwner: process.env.WORDLES_REPO_OWNER,
-        repoName: process.env.WORDLES_REPO_NAME,
+        repoOwner: serverUtils.repoOwner,
+        repoName: serverUtils.repoName,
         branchName: branch,
         filePath: "src/_data/answers.json",
         fileContent: JSON.stringify(jsonFileContent),
@@ -48,8 +48,8 @@ const updateAnswerFile = async (octokit, jsonFileContent, sha, branch, newAnswer
     jsonFileContent[uniqueId] = newAnswer;
 
     return gitOpsApi.updateSingleFile(octokit, {
-        repoOwner: process.env.WORDLES_REPO_OWNER,
-        repoName: process.env.WORDLES_REPO_NAME,
+        repoOwner: serverUtils.repoOwner,
+        repoName: serverUtils.repoName,
         branchName: branch,
         filePath: "src/_data/answers.json",
         fileContent: JSON.stringify(jsonFileContent),

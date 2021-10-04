@@ -5,7 +5,7 @@ const {
 } = require("@octokit/core");
 
 const gitOpsApi = require("git-ops-api");
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 exports.handler = async function (event) {
@@ -25,8 +25,8 @@ exports.handler = async function (event) {
 
     try {
         await gitOpsApi.createBranch(octokit, {
-    		repoOwner: process.env.WORDLES_REPO_OWNER,
-    		repoName: process.env.WORDLES_REPO_NAME,
+    		repoOwner: serverUtils.repoOwner,
+    		repoName: serverUtils.repoName,
     		baseBranchName: "main",
     		targetBranchName: branchName
     	});
@@ -36,8 +36,8 @@ exports.handler = async function (event) {
         const questionFilePath = "src/_data/question.json";
         const questionFileInfo = await fetchJSONFile(octokit, branchName, questionFilePath);
         await gitOpsApi.updateSingleFile(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME,
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName,
             branchName,
             filePath: questionFilePath,
             fileContent: JSON.stringify({

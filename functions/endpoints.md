@@ -39,27 +39,30 @@ site. If it is, the value is `true`. Otherwise, the state is `false`.
 
 ## Fetch Wordles (GET /api/fetch_wordles)
 
-* **description**: Fetch all wordles. The main branch is excluded from the list.
+* **description**: Fetch the netlify site name and all wordles. The main branch is excluded from the wordle list.
 * **method:** `GET`
 * **route:** `/api/fetch_wordles`
 * **return:** A JSON document containing all wordles.
 
 ```json
 {
-    "a11y-workshop": {
-        "content": {
-            "workshopName": "Accessibility Workshop",
-            "question": "What are three most important problems to be addressed by inclusive design?",
-            "entries": 3,
-            "entryMaxLength": 80,
-            "createdTimestamp": "2021-05-05T18:03:02.752Z",
-            "lastModifiedTimestamp": "2021-05-05T18:03:02.752Z",
-            "branch": "a11y-workshop"
-        },
-        "exists": true,
-        "sha": "c150e89017167f06cbd0e809ed66fb070696e626"
+    "netlifySiteName": "inverted-wordles",
+    "wordles": {
+        "a11y-workshop": {
+            "content": {
+                "workshopName": "Accessibility Workshop",
+                "question": "What are three most important problems to be addressed by inclusive design?",
+                "entries": 3,
+                "entryMaxLength": 80,
+                "createdTimestamp": "2021-05-05T18:03:02.752Z",
+                "lastModifiedTimestamp": "2021-05-05T18:03:02.752Z",
+                "branch": "a11y-workshop"
+            },
+            "exists": true,
+            "sha": "c150e89017167f06cbd0e809ed66fb070696e626"
+        }
+        ...
     }
-    ...
 }
 ```
 

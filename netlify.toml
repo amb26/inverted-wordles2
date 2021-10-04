@@ -16,3 +16,8 @@
     from = "/api/*"
     to = "/.netlify/functions/:splat"
     status = 200
+
+[[plugins]]
+# Allow netlify functions to access netlify build time environment variables.
+# See https://www.npmjs.com/package/netlify-plugin-inline-functions-env
+package = "netlify-plugin-inline-functions-env"

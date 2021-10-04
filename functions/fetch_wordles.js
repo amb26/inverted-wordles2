@@ -5,7 +5,8 @@ const {
 } = require("@octokit/core");
 
 const gitOpsApi = require("git-ops-api");
-const serverUtils = require("../functions-common/server_utils.js");
+const serverUtils = require("../functions-common/serverUtils.js");
+const fetchNetlifySiteInfo = require("../functions-common/fetchNetlifySiteInfo.js").fetchNetlifySiteInfo;
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 exports.handler = async function (event) {
@@ -23,9 +24,10 @@ exports.handler = async function (event) {
     });
 
     try {
+        // Get all wordles
         const branches = await gitOpsApi.getAllBranches(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName
         });
 
         let wordles = {};
@@ -35,9 +37,16 @@ exports.handler = async function (event) {
             }
             wordles[branch.name] = await fetchJSONFile(octokit, branch.name, "src/_data/question.json");
         }
+
+        // Get netlify site information
+        const netlifySiteInfo = await fetchNetlifySiteInfo();
+
         return {
             statusCode: 200,
-            body: JSON.stringify(wordles)
+            body: JSON.stringify({
+                netlifySiteName: netlifySiteInfo.name,
+                wordles
+            })
         };
     } catch (e) {
         console.log("fetch_wordles error: ", e);

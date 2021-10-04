@@ -2,8 +2,6 @@
 
 "use strict";
 
-const netlifyUrlSuffix = "--inverted-wordles.netlify.app/";
-
 /**
  * Escape html special characters.
  * See: https://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript#answer-6234804
@@ -88,7 +86,7 @@ inverted_wordles.manage.renderWordleRow = function (wordleOptions) {
         ` : `
         <div class="view-answer-cell">
             <label for="view-answer-id-${ uniqueId }">Answers</label>
-            <a id="view-answer-id-${ uniqueId }" class="button view-answer" href="https://${ wordleOptions.branchName + netlifyUrlSuffix }answer/">
+            <a id="view-answer-id-${ uniqueId }" class="button view-answer" href="https://${ wordleOptions.branchName + inverted_wordles.instance.netlifyUrlSuffix }answer/">
                 <svg role="presentation" class="view-answer-svg">
                     <use xlink:href="#view"></use>
                 </svg>
@@ -97,7 +95,7 @@ inverted_wordles.manage.renderWordleRow = function (wordleOptions) {
         </div>
         <div class="view-wordle-cell">
             <label for="view-wordle-id-${ uniqueId }">Wordle</label>
-            <a id="view-wordle-id-${ uniqueId }" class="button view-wordle" href="https://${ wordleOptions.branchName + netlifyUrlSuffix }wordle/">
+            <a id="view-wordle-id-${ uniqueId }" class="button view-wordle" href="https://${ wordleOptions.branchName + inverted_wordles.instance.netlifyUrlSuffix }wordle/">
                 <svg role="presentation" class="view-wordle-svg">
                     <use xlink:href="#view"></use>
                 </svg>
