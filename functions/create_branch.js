@@ -5,6 +5,7 @@ const {
 } = require("@octokit/core");
 
 const gitOpsApi = require("git-ops-api");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
 
 exports.handler = async function (event) {
@@ -14,24 +15,18 @@ exports.handler = async function (event) {
     // Reject the request when:
     // 1. Not a POST request;
     // 2. Doesn’t provide required values;
-    if (event.httpMethod !== "POST" || !branchName ||
-        !process.env.ACCESS_TOKEN || !process.env.WORDLES_REPO_OWNER || !process.env.WORDLES_REPO_NAME) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({
-                message: "Invalid HTTP request method or missing field values or missing environment variables."
-            })
-        };
+    if (event.httpMethod !== "POST" || !serverUtils.isParamsExist([branchName])) {
+        return serverUtils.invalidRequestResponse;
     }
 
     const octokit = new Octokit({
-        auth: process.env.ACCESS_TOKEN
+        auth: process.env.GITHUB_TOKEN
     });
 
     try {
         await gitOpsApi.createBranch(octokit, {
-    		repoOwner: process.env.WORDLES_REPO_OWNER,
-    		repoName: process.env.WORDLES_REPO_NAME,
+    		repoOwner: serverUtils.repoOwner,
+    		repoName: serverUtils.repoName,
     		baseBranchName: "main",
     		targetBranchName: branchName
     	});
@@ -41,9 +36,9 @@ exports.handler = async function (event) {
         const questionFilePath = "src/_data/question.json";
         const questionFileInfo = await fetchJSONFile(octokit, branchName, questionFilePath);
         await gitOpsApi.updateSingleFile(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME,
-            branchName: branchName,
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName,
+            branchName,
             filePath: questionFilePath,
             fileContent: JSON.stringify({
                 workshopName: "",

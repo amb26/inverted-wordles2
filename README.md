@@ -4,7 +4,12 @@ This project allows users to create word cloud questions. Answers to each questi
 inverted Wordle that highlights minority answers.
 
 The front end of the project is built with [Eleventy](https://11ty.dev/). The website is deployed on
-[Netlify](https://www.netlify.com/).
+[Netlify](https://www.netlify.com/). The wordle data is saved in [the inclusive-design/inverted-wordles GitHub
+repository](https://github.com/inclusive-design/inverted-wordles/).
+
+When a new wordle question is created or an existing wordle question is modified, the new/updated question is pushed
+into the GitHub repository that triggers Netlify to deploy/re-deploy the wordle website. The detail of the architecture
+of this project can be found at [Inverted Wordles Architecture wiki page](https://wiki.fluidproject.org/display/fluid/Inverted+Wordles+Architecture).
 
 ## Install
 
@@ -26,6 +31,19 @@ npm ci
 
 ## Development
 
+To test the project in a self-contained way, follow steps below to deploy a personal cloned `inverted-wordles`
+GitHub repository with Netlify.
+
+* Sign up with [Netlify](https://netlify.com/)
+* Follow [the Netlify documentation](https://docs.netlify.com/site-deploys/create-deploys/#deploy-with-git) to connect
+a GitHub repository with a Netlify site
+* Go to Netlify "Site settings" -> "Build & deploy" section
+    * In "Branches" -> set "Branch deploys" to "All" (Deploy all the branches pushed to the repository)
+    * In "Environment" -> add environment variables. See "Environment Variables" section below to find out
+    what variables need to be defined
+* Go to Netlify Identity, enable identity service then invite yourself and others who will use your inverted-wordles
+site.
+
 ### Development without Netlify endpoints
 
 When working on webpages that don't need the support of Netlify endpoints, run:
@@ -43,15 +61,16 @@ The website will be available at http://localhost:3000
 This project uses individual Github branch to save the question and answers for each wordle case. The required
 information for accessing the Github repository are defined in these environment variables:
 
-* WORDLES_REPO_OWNER: The owner of the Github repository that the wordle data is saved into.
-* WORDLES_REPO_NAME: The name of the Github repository that the wordle data is saved into.
-* ACCESS_TOKEN: The personal access token of the account for authenticating the access to the Github repository. This
+* REPOSITORY_URL: Optional. The GitHub repository URL that wordles are operated on. For example:
+`https://github.com/inclusive-design/inverted-wordles`. This variable needs to be manually defined when running
+the project locally via `netlify dev`. With real Netlify deployed sites, it is automatically available as a Netlify
+build time environment variable. See [the Netlify build environment variables documentation](github.com/cindyli/inverted-wordles).
+* GITHUB_TOKEN: The personal access token of the account for authenticating the access to the Github repository. This
 access token must have `repo` access. Refer to [the Github documentation](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 about how to create a personal access token.
-
-An example for finding out `WORDLES_REPO_OWNER` and `WORDLES_REPO_NAME` values: if the URL of a Github repository is
-`https://github.com/inclusive-design/inverted-wordles`, the value of `WORDLES_REPO_OWNER` is `inclusive-design` and the
-value of `WORDLES_REPO_NAME` is `inverted-wordles`.
+* NETLIFY_TOKEN: The personal access token of the Netlify account for authenticating the access to the Netlify API.
+Refer to [the Netlify documentation](https://docs.netlify.com/api/get-started/#authentication) about how to create
+a personal access token.
 
 #### Run with Local Netlify Endpoints
 
@@ -59,9 +78,9 @@ Follow [Netlify instructions](https://docs.netlify.com/functions/build-with-java
 and deploying Netlify functions locally. Once the tool is set up, run:
 
 ```bash
-export WORDLES_REPO_OWNER=YOUR-WORDLES_REPO_OWNER
-export WORDLES_REPO_NAME=YOUR-WORDLES_REPO_NAME
-export ACCESS_TOKEN=YOUR-PERSONAL-ACCESS-TOKEN
+export REPOSITORY_URL=YOUR-REPOSITORY-URL
+export GITHUB_TOKEN=YOUR-PERSONAL-ACCESS-TOKEN
+export NETLIFY_TOKEN=YOUR-NETLIFY-ACCOUNT-PERSONAL-ACCESS-TOKEN
 netlify dev
 ```
 
@@ -81,9 +100,9 @@ Alternatively, a `.env` file can be created within the local project directory a
 environment variables can be added directly to it as follows:
 
 ```env
-WORDLES_REPO_OWNER=YOUR-WORDLES_REPO_OWNER
-WORDLES_REPO_NAME=YOUR-WORDLES_REPO_NAME
-ACCESS_TOKEN=YOUR-PERSONAL-ACCESS-TOKEN
+REPOSITORY_URL=YOUR-REPOSITORY-URL
+GITHUB_TOKEN=YOUR-PERSONAL-ACCESS-TOKEN
+NETLIFY_TOKEN=YOUR-NETLIFY-ACCOUNT-PERSONAL-ACCESS-TOKEN
 ```
 
 (Note: `.env` is in the project's `.gitignore` file to prevent sensitive information from being accidentally
