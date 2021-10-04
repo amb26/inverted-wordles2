@@ -1,56 +1,40 @@
 "use strict";
 
-const http = require("http");
-const url = require("url");
+const axios = require("axios");
+const serverUtils = require("../functions-common/serverUtils.js");
+const fetchNetlifySiteInfo = require("../functions-common/fetchNetlifySiteInfo.js").fetchNetlifySiteInfo;
 
+// Support the endpoint /api/check_deploy
+// Loop through incoming branches to find whether a branch deploy completes by querying [the Netlify deploys API]
+// (https://open-api.netlify.com/#operation/showSiteTLSCertificate).
 exports.handler = async function (event) {
     console.log("Received check_deploy request at " + new Date() + " with path " + event.path);
-    var branch = /check_deploy\/(.*)/.exec(event.path)[1];
+    const incomingData = JSON.parse(event.body || {});
 
     // Reject the request when:
-    // 1. Not a GET request;
+    // 1. Not a POST request;
     // 2. Doesn’t provide required values
-    if (event.httpMethod !== "GET" || !branch ||
-        !process.env.ACCESS_TOKEN || !process.env.WORDLES_REPO_OWNER || !process.env.WORDLES_REPO_NAME) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({
-                message: "Invalid HTTP request method or missing field values or missing environment variables."
-            })
-        };
+    if (event.httpMethod !== "POST" || !serverUtils.isParamsExist([incomingData.branches])) {
+        return serverUtils.invalidRequestResponse;
     }
 
-    const checkUrlExists = async function (wordleUrl) {
-        return new Promise(function (resolve, reject) {
-            const req = http.request({
-                method: "HEAD",
-                host: url.parse(wordleUrl).host,
-                port: 80,
-                path: url.parse(wordleUrl).pathname
-            }, function (response) {
-                if (response.statusCode < 400) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            });
-
-            req.on("error", err => {
-                reject(err);
-            });
-            req.end();
-        });
-    };
-
     try {
-        const wordleUrl = "https://" + branch + "--inverted-wordles.netlify.app/";
-        const isUrlExists = await checkUrlExists(wordleUrl);
-        console.log("Done: the wordle url existent status", isUrlExists);
+        const netlifySiteInfo = await fetchNetlifySiteInfo();
+        const deploys = netlifySiteInfo.id ? await axios.get(serverUtils.netlifyApi + "/sites/" + netlifySiteInfo.id + "/deploys", {
+            headers: {
+                "Authorization": "Bearer " + process.env.NETLIFY_TOKEN
+            }
+        }) : undefined;
+
+        let resultsTogo = {};
+        for (const branch of incomingData.branches) {
+            const matchedDeploy = deploys ? deploys.data.find(oneDeploy => oneDeploy.branch === branch) : undefined;
+            resultsTogo[branch] = !matchedDeploy ? false : matchedDeploy.state === "ready" ? true : false;
+        }
+        console.log("Done: " + JSON.stringify(resultsTogo));
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                exists: isUrlExists
-            })
+            body: JSON.stringify(resultsTogo)
         };
     } catch (e) {
         console.log("check_deploy error: ", e);
