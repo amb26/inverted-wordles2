@@ -1,6 +1,7 @@
 "use strict";
 
 const gitOpsApi = require("git-ops-api");
+const serverUtils = require("./serverUtils.js");
 
 /**
  * An object that contains file information.
@@ -28,8 +29,8 @@ const gitOpsApi = require("git-ops-api");
  */
 exports.fetchJSONFile = async (octokit, branch, filePath) => {
     const fetchInfo =  {
-        repoOwner: process.env.WORDLES_REPO_OWNER,
-        repoName: process.env.WORDLES_REPO_NAME,
+        repoOwner: serverUtils.repoOwner,
+        repoName: serverUtils.repoName,
         branchName: branch,
         filePath: filePath
     };

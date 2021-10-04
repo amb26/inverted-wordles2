@@ -2,8 +2,9 @@
     "name": "@wecount/inverted-wordles",
     "version": "0.0.1",
     "description": "Build inverted wordles that collect people answers to a given question and highlight minority answers.",
+    "author": "Inclusive Design Research Centre",
     "license": "BSD-3-Clause",
-    "author": "OCAD University <idrc@ocadu.ca>",
+    "repository": "https://github.com/inclusive-design/inverted_wordles",
     "scripts": {
         "lint": "fluid-lint-all",
         "build": "rimraf dist && eleventy",
@@ -15,6 +16,7 @@
         "@11ty/eleventy-navigation": "0.3.2",
         "@11ty/eleventy-plugin-rss": "1.1.1",
         "@octokit/core": "3.5.1",
+        "axios": "0.21.4",
         "d3": "7.0.0",
         "d3-cloud": "1.2.5",
         "git-ops-api": "1.0.0",
@@ -30,11 +32,11 @@
         "eslint-config-fluid": "2.0.0",
         "fluid-lint-all": "1.1.4",
         "html-minifier": "4.0.0",
+        "http-server": "0.12.3",
         "rimraf": "3.0.2",
         "sass": "1.35.2",
         "stylelint": "13.13.1",
         "stylelint-config-fluid": "0.2.1",
-        "terser": "5.7.1",
-        "http-server": "0.12.3"
+        "terser": "5.7.1"
     }
 }
