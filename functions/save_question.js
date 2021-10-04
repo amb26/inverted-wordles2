@@ -5,8 +5,9 @@ const {
 } = require("@octokit/core");
 
 const gitOpsApi = require("git-ops-api");
+const serverUtils = require("../functions-common/serverUtils.js");
 const fetchJSONFile = require("../functions-common/fetchJSONFile.js").fetchJSONFile;
-const allowedParameters = ["branchName", "workshop-name", "question", "entries"];
+const allowedParameters = ["branch", "workshop-name", "question", "entries"];
 
 exports.handler = async function (event) {
     console.log("Received save_question request at " + new Date() + " with path " + event.path);
@@ -17,14 +18,8 @@ exports.handler = async function (event) {
     // 2. Doesn’t provide required values;
     // 3. Provided parameter names are not allowed;
     const paramsAllValid = Object.keys(parameters).every(paramKey => allowedParameters.includes(paramKey));
-    if (event.httpMethod !== "POST" || !parameters.branchName || !paramsAllValid ||
-        !process.env.ACCESS_TOKEN || !process.env.WORDLES_REPO_OWNER || !process.env.WORDLES_REPO_NAME) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({
-                message: "Invalid HTTP request method or missing field values or missing environment variables."
-            })
-        };
+    if (event.httpMethod !== "POST" || !serverUtils.isParamsExist([parameters.branch]) || !paramsAllValid) {
+        return serverUtils.invalidRequestResponse;
     }
 
     // Reject if the entries value is not an integer and greater than 0.
@@ -39,9 +34,9 @@ exports.handler = async function (event) {
     }
 
     const octokit = new Octokit({
-        auth: process.env.ACCESS_TOKEN
+        auth: process.env.GITHUB_TOKEN
     });
-    const branch = parameters.branchName;
+    const branch = parameters.branch;
 
     try {
         const questionFilePath = "src/_data/question.json";
@@ -64,8 +59,8 @@ exports.handler = async function (event) {
         console.log("Save newQuestionFileInfo: ", JSON.stringify(newQuestionFileInfo));
 
         await gitOpsApi.updateSingleFile(octokit, {
-            repoOwner: process.env.WORDLES_REPO_OWNER,
-            repoName: process.env.WORDLES_REPO_NAME,
+            repoOwner: serverUtils.repoOwner,
+            repoName: serverUtils.repoName,
             branchName: branch,
             filePath: questionFilePath,
             fileContent: JSON.stringify(newQuestionFileInfo),

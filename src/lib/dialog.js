@@ -1,11 +1,11 @@
 /*
- * This script is a copy of W3C ARIA practices example.
- * See: https://www.w3.org/TR/wai-aria-practices-1.2/examples/dialog-modal/dialog.html
+ * This script is a modification of a W3C ARIA practices example sourced at:
+ * https://www.w3.org/TR/wai-aria-practices-1.2/examples/dialog-modal/dialog.html
  * view-source:https://www.w3.org/TR/wai-aria-practices-1.2/examples/js/utils.js
  */
 
 /*
- * This content is licensed according to the W3C Software License at
+ * The original content is licensed according to the W3C Software License at
  * https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
 */
 
@@ -309,23 +309,15 @@ aria.Utils = aria.Utils || {};
     }
   }; // end trapFocus
 
-  window.openDialog = function (dialogId, focusAfterClosed, focusFirst) {
+  aria.openDialog = function (dialogId, focusAfterClosed, focusFirst) {
     var dialog = new aria.Dialog(dialogId, focusAfterClosed, focusFirst);
   };
 
-  window.closeDialog = function (closeButton) {
+  aria.closeDialog = function (closeButton) {
     var topDialog = aria.getCurrentDialog();
     if (topDialog.dialogNode.contains(closeButton)) {
       topDialog.close();
     }
   }; // end closeDialog
-
-  window.replaceDialog = function (newDialogId, newFocusAfterClosed,
-    newFocusFirst) {
-    var topDialog = aria.getCurrentDialog();
-    if (topDialog.dialogNode.contains(document.activeElement)) {
-      topDialog.replace(newDialogId, newFocusAfterClosed, newFocusFirst);
-    }
-  }; // end replaceDialog
 
 }());
